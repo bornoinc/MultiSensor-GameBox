@@ -6,7 +6,7 @@ int dt = 1000;
 // Light Sensor
 int LDRInput = A0;  //Set Analog Input A0 for LDR.
 int highest_light = analogRead(LDRInput);
-float shade_factor = 0.7;
+float shade_factor = 0.6;
 
 // Speed Sensor
 int speed_pin = 3;     // The pin the encoder is connected
@@ -100,7 +100,9 @@ void loop() {
   if (current_sensor == 0) {
     lcd_display_string(0, 0, " Start? ");
   }
-  else if (current_sensor == 1) {
+
+if(sensor_running){  
+   if (current_sensor == 1) {
     speed();
   }
   else if (current_sensor == 2) {
@@ -119,6 +121,7 @@ void loop() {
   led();
 
   digitalWrite(9, LOW);
+}
 
   Serial.println(current_sensor);
 
@@ -152,7 +155,7 @@ void speed() {
     lcd_display_string(0, 0, "Swipe Speed/min");
     lcd_display_float(6, 1, rpm);
 
-    if (rpm >= 10) {
+    if (rpm >= 16) {
       digitalWrite(9, HIGH);
 
       lcd.clear();
@@ -226,7 +229,7 @@ void pressure() {
   }
   highest_pressure = max(fsrPressure, highest_pressure);
   
-  if (highest_pressure>20){
+  if (highest_pressure>12){
       digitalWrite(9, HIGH);
       }
 
@@ -279,7 +282,7 @@ void flow() {
 void score(){
   int max_score =0;
   max_score += map(max_rpm, 16, 30, 0, 15);
-  max_score += map(highest_pressure, 0, 30, 0, 30);
+  max_score += map(highest_pressure, 0, 25, 0, 30);
   max_score += map(highest_flow, 0, 30, 0, 30);
   max_score += map(highest_temp, 20, 38, 0, 25);
   if (max_score>60){
